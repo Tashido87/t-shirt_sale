@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-Shirt Sales Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d5f63;
+            --secondary: #f5f5f5;
+            --accent: #e74c3c;
+            --text: #333;
+            --light-text: #666;
+            --border: #ddd;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--box-shadow);
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin: 25px 0 15px 0;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background-color: var(--primary);
+            border-radius: 3px;
+        }
+
+        section {
+            margin-bottom: 40px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        section:hover {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .search-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .date-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--primary);
+            min-width: 90px;
+        }
+
+        input[type="date"] {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(13, 95, 99, 0.2);
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            background-color: #0a4c4f;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            animation: slideInUp 0.5s ease;
+            background-color: white;
+            border-radius: 8px;
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+            font-weight: 600;
+        }
+
+        tr {
+            transition: var(--transition);
+        }
+
+        tr:nth-child(even) {
+            background-color: #f5f9fa;
+        }
+
+        tr:hover {
+            background-color: #e6f2f3;
+            transform: scale(1.005);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+            text-align: center;
+            transition: var(--transition);
+            border-top: 4px solid var(--primary);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 10px;
+        }
+
+        .stat-title {
+            font-size: 1rem;
+            color: var(--light-text);
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: var(--light-text);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 30px;
+            color: var(--light-text);
+            font-style: italic;
+        }
+
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 5px solid #c62828;
+            animation: shakeError 0.5s ease;
+        }
+
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>T-Shirt Sales Dashboard</h1>
+            <p id="last-updated"></p>
+        </header>
+
+        <section id="stats-section">
+            <h2>Overview</h2>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-title">Total Inventory</div>
+                    <div class="stat-value" id="total-inventory">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Total Sold</div>
+                    <div class="stat-value" id="total-sold">-</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="inventory-section">
+            <h2>Inventory Status</h2>
+            <div id="inventory-table-container">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading inventory data...
+                </div>
+            </div>
+        </section>
+
+        <section id="sales-section">
+            <h2>Sales Records</h2>
+            <div class="search-controls">
+                <div class="date-control">
+                    <label for="start-date">Start Date:</label>
+                    <input type="date" id="start-date" name="start-date">
+                </div>
+                <div class="date-control">
+                    <label for="end-date">End Date:</label>
+                    <input type="date" id="end-date" name="end-date">
+                </div>
+                <button id="search-button" type="button">
+                    <i class="fas fa-search"></i> Find Sale Records
+                </button>
+            </div>
+            <div id="search-results">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Please select date range and click search
+                </div>
+            </div>
+        </section>
+
+        <div class="footer">
+            © 2025 T-Shirt Sales Dashboard
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        const SPREADSHEET_ID = '12uZ_q2ADv7f14praGnLw923tI96kOZ0Z8EuRRVow7K8';
+        const API_KEY = 'AIzaSyCW8AIHayvU9QOyc3GF3XokTUJdk1VpMZ8';
+        const INVENTORY_SHEET = 'INVENTORY'; // Replace with your actual inventory sheet name
+        const SALES_SHEET = 'SALES'; // Replace with your actual sales sheet name
+        const INVENTORY_RANGE = 'A1:L100'; // Adjust range if needed
+        const SALES_RANGE = 'A1:K100'; // Adjust range if needed
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(today.getDate() - 30);
+            
+            document.getElementById('end-date').value = formatDate(today);
+            document.getElementById('start-date').value = formatDate(thirtyDaysAgo);
+            
+            document.getElementById('last-updated').textContent = `Last updated: ${today.toLocaleString()}`;
+            
+            loadInventoryData();
+            
+            document.getElementById('search-button').addEventListener('click', searchSalesData);
+        });
+        
+        // Format date as YYYY-MM-DD for input fields
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        
+        // Load inventory data from Google Sheets
+        function loadInventoryData() {
+            const inventoryContainer = document.getElementById('inventory-table-container');
+            inventoryContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading inventory data...</div>';
+            
+            fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${INVENTORY_SHEET}!${INVENTORY_RANGE}?key=${API_KEY}`)
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(`HTTP ${response.status}: ${text}`); });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displayInventoryData(data.values);
+                    updateInventoryStats(data.values);
+                })
+                .catch(error => {
+                    console.error('Error fetching inventory data:', error);
+                    inventoryContainer.innerHTML = `
+                        <div class="error">
+                            <strong>Error loading inventory data:</strong> ${error.message}
+                        </div>
+                    `;
+                });
+        }
+        
+        // Display inventory data in a table
+        function displayInventoryData(data) {
+            if (!data || data.length < 2) {
+                document.getElementById('inventory-table-container').innerHTML = '<div class="no-data">No inventory data available</div>';
+                return;
+            }
+            
+            const headers = data[0];
+            const profitIndex = headers.indexOf('Profit');
+            
+            const tableHeaders = [...headers];
+            if (profitIndex !== -1) {
+                tableHeaders.splice(profitIndex, 1);
+            }
+            
+            let tableHTML = `
+                <table id="inventory-table">
+                    <thead>
+                        <tr>
+                            ${tableHeaders.map(header => `<th>${header}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            for (let i = 1; i < data.length; i++) {
+                if (data[i].length === 0) continue;
+                
+                const rowData = [...data[i]];
+                if (profitIndex !== -1 && rowData.length > profitIndex) {
+                    rowData.splice(profitIndex, 1);
+                }
+                
+                tableHTML += '<tr>';
+                rowData.forEach((cell, index) => {
+                    if (index < tableHeaders.length) {
+                        tableHTML += `<td>${cell || ''}</td>`;
+                    }
+                });
+                tableHTML += '</tr>';
+            }
+            
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+            
+            document.getElementById('inventory-table-container').innerHTML = tableHTML;
+        }
+        
+        // Update inventory statistics
+        function updateInventoryStats(data) {
+            if (!data || data.length < 2) return;
+            
+            const headers = data[0];
+            const remainingIndex = headers.indexOf('Remaining');
+            const totalSoldIndex = headers.indexOf('Total Sold');
+            
+            let totalInventory = 0;
+            let totalSold = 0;
+            
+            for (let i = 1; i < data.length; i++) {
+                if (!data[i] || data[i].length === 0) continue;
+                
+                if (remainingIndex !== -1 && data[i][remainingIndex]) {
+                    totalInventory += parseInt(data[i][remainingIndex]) || 0;
+                }
+                
+                if (totalSoldIndex !== -1 && data[i][totalSoldIndex]) {
+                    totalSold += parseInt(data[i][totalSoldIndex]) || 0;
+                }
+            }
+            
+            document.getElementById('total-inventory').textContent = totalInventory;
+            document.getElementById('total-sold').textContent = totalSold;
+        }
+        
+        // Search sales data based on date range
+        function searchSalesData() {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            
+            if (!startDate || !endDate) {
+                document.getElementById('search-results').innerHTML = `
+                    <div class="error">
+                        <strong>Error:</strong> Please select both start and end dates.
+                    </div>
+                `;
+                return;
+            }
+            
+            document.getElementById('search-results').innerHTML = `
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Searching sales records...
+                </div>
+            `;
+            
+            fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${SALES_SHEET}!${SALES_RANGE}?key=${API_KEY}`)
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(`HTTP ${response.status}: ${text}`); });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displaySalesData(data.values, startDate, endDate);
+                })
+                .catch(error => {
+                    console.error('Error fetching sales data:', error);
+                    document.getElementById('search-results').innerHTML = `
+                        <div class="error">
+                            <strong>Error loading sales data:</strong> ${error.message}
+                        </div>
+                    `;
+                });
+        }
+        
+        // Display filtered sales data
+        function displaySalesData(data, startDate, endDate) {
+            if (!data || data.length < 2) {
+                document.getElementById('search-results').innerHTML = '<div class="no-data">No sales data available</div>';
+                return;
+            }
+            
+            const headers = data[0];
+            const dateIndex = headers.indexOf('Date');
+            
+            // Filter data by date range
+            const filteredData = data.slice(1).filter(row => {
+                if (!row || row.length === 0 || !row[dateIndex]) return false;
+                
+                // Attempt to parse date in multiple formats
+                let rowDate;
+                const dateStr = row[dateIndex];
+                if (dateStr.includes('-')) { // DD-MMM-YYYY
+                    const dateParts = dateStr.split('-');
+                    if (dateParts.length !== 3) return false;
+                    const months = {
+                        'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5, 
+                        'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+                    };
+                    const day = parseInt(dateParts[0]);
+                    const month = months[dateParts[1]] || 0;
+                    const year = parseInt(dateParts[2]);
+                    rowDate = new Date(year, month, day);
+                } else { // MM/DD/YYYY or other formats
+                    rowDate = new Date(dateStr);
+                }
+                
+                if (isNaN(rowDate.getTime())) return false; // Invalid date
+                
+                const startDateTime = new Date(startDate);
+                const endDateTime = new Date(endDate);
+                
+                return rowDate >= startDateTime && rowDate <= endDateTime;
+            });
+            
+            // Sort by date (oldest first)
+            filteredData.sort((a, b) => {
+                const dateA = new Date(a[dateIndex]);
+                const dateB = new Date(b[dateIndex]);
+                return dateA - dateB;
+            });
+            
+            // Calculate totals for the filtered data
+            const quantityIndex = headers.indexOf('Quantity Sold');
+            
+            let totalQuantity = 0;
+            
+            filteredData.forEach(row => {
+                totalQuantity += parseInt(row[quantityIndex]) || 0;
+            });
+            
+            // Create summary cards
+            const summaryHTML = `
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-title">Total Shirts Sold</div>
+                        <div class="stat-value">${totalQuantity}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Records Found</div>
+                        <div class="stat-value">${filteredData.length}</div>
+                    </div>
+                </div>
+            `;
+            
+            // Create table with filtered data
+            let tableHTML = '';
+            
+            if (filteredData.length > 0) {
+                tableHTML = `
+                    <table id="sales-table">
+                        <thead>
+                            <tr>
+                                ${headers.map(header => `<th>${header}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                filteredData.forEach(row => {
+                    tableHTML += '<tr>';
+                    headers.forEach((header, index) => {
+                        tableHTML += `<td>${row[index] || ''}</td>`;
+                    });
+                    tableHTML += '</tr>';
+                });
+                
+                tableHTML += `
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                tableHTML = '<div class="no-data">No sales records found in the selected date range</div>';
+            }
+            
+            document.getElementById('search-results').innerHTML = summaryHTML + tableHTML;
+        }
+    </script>
